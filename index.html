@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD en jQuery</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="manifest" href="/images/site.webmanifest">
+    <link rel="stylesheet" href="/library/bootstrap/5.2.3/css/bootstrap.min.css">
+    <script src="/library/jquery/3.6.4/jquery-3.6.4.min.js"></script>
+    <script src="/library/bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script>
+    <script src="crud.js"></script>
+</head>
+
+<body>
+    <h1>Liste des éléments</h1>
+    <div class="row">
+
+        <div class="col-4">
+            <!-- <ul id="iitem-list"></ul> -->
+            <form method="post" id="add-item-form">
+                <h2>Ajouter un élément</h2>  
+                <input type="text" id="new-item" name="newItem" class="form-control" placeholder="Nouvel élément">
+                <button id="add-item" class="btn btn-primary">Ajouter</button>
+            </form>
+            <form method="post" id="update-item-form">
+                <h2>Modifier un élément</h2>
+                <input type="text" id="choice-item" name="choiceItem" class="form-control" placeholder="Choisir élément">
+                <input type="text" id="edit-item" name="editItem" class="form-control" placeholder="Modifier élément">
+                <button id="update-item" class="btn btn-info">Mettre à jour</button>
+            </form>
+        </div>
+        <div class="col-4">
+            <form method="post" id="remove-item-form">
+                <h2>Supprimer un élément</h2>
+                <input type="text" id="delete-item" name="deleteItem" class="form-control"
+                    placeholder="Supprimer élément">
+                <button id="remove-item" class="btn btn-danger">Supprimer</button>
+            </form>
+
+            <form method="post" id="search-item-form">
+                <h2>Rechercher un élément</h2>
+                <input type="text" id="search-item" name="searchItem" class="form-control"
+                    placeholder="Rechercher un élément">
+                <button id="search-button" class="btn btn-success">Rechercher</button>
+            </form>
+
+        </div>
+        <div class="col-4">
+            <!-- liste des elements -->
+            <table class="table">
+                <theader>
+                    <tr>
+                        <th>nom</th>
+                    </tr>
+                </theader>
+                <tbody id="item-list">
+                    <!-- ajouter ici -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+</body>
+
+</html>
