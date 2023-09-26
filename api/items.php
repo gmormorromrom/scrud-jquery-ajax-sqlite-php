@@ -1,5 +1,6 @@
 <?php
 include "../dbconfig.php";
+// # api/items.php
 // Function to send API requests
 function apiRequest($url, $method = 'GET', $data = null)
 {
@@ -17,7 +18,7 @@ function apiRequest($url, $method = 'GET', $data = null)
 }
 header("Access-Control-Allow-Origin: *");
 header('Content-Type: application/json; charset=utf-8');
-header('Allow: POST,OPTIONS,HEAD,GET,TRACE, DELETE');
+header('Allow: POST,OPTIONS,HEAD,GET,TRACE');
 // Check the request method
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $sql = "SELECT * FROM items DESC";
@@ -26,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $data = array();
 
     while ($row = $query->fetchArray()) {
-        $data[] = ["name" => $row['item_name']];
+        $data["data"][] = array("name" => $row['item_name']);
     }
     // Handle GET request
     header("HTTP/1.1 200 OK");
@@ -48,6 +49,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             //insert query
             $input = htmlspecialchars($POST["newItem"], ENT_QUOTES, 'UTF-8');
+            if(strlen($string)<3){
+                // Répondez avec le code de statut 201 (Created)
+                header("HTTP/1.1 400 Bad Request");
+                echo json_encode(array('message' => 'data must have 3 chars min.'));
+                exit();
+            }
             $sql = "INSERT INTO items (item_name) VALUES ('" . $input . "')";
             $db->exec($sql);
             // Répondez avec le code de statut 201 (Created)
@@ -107,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $itemSearch = htmlspecialchars($POST["searchItem"], ENT_QUOTES, 'UTF-8');; // Replace with your logic to get the item ID to delete
             //delete the row of selected id
             //update our table
-            $sql = "SELECT * FROM items WHERE item_name = '" . $itemSearch . "'";
+            $sql = "SELECT * FROM items WHERE item_name LIKE  '%" . $itemSearch . "%'";
             $query = $db->query($sql);
 
             $data = array();
@@ -129,16 +136,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         http_response_code(405); // Method Not Allowed
         echo "Unsupported content type: " . $_SERVER['CONTENT_TYPE'];
     }
-} elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
-    // Handle PUT request
-    // You can extract item ID from the request URL or payload and update accordingly
-    $itemId = 1; // Replace with your logic to get the item ID to update
-    $updatedItemData = [
-        'name' => 'Nom mis à jour',
-        'description' => 'Description mise à jour',
-    ];
-    $updatedItem = apiRequest('https://votre-api.com/api/items/' . $itemId, 'PUT', $updatedItemData);
-    print_r($updatedItem);
 } else {
     // Handle other request methods or return an error
     http_response_code(405); // Method Not Allowed
