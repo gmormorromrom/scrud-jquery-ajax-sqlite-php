@@ -13,7 +13,7 @@ dans une page unique
 project containing a simple SCRUD(SEARCH CREATE READ UPDATE DELETE)
 with :
 bootstrap 5.2
-jquery 3.6
+jquery 3.7
 PHP 7.4
 SQLite 3
 in a single page
@@ -23,3 +23,12 @@ CREATE TABLE IF NOT EXISTS items (
 item_name STRING,
 UNIQUE(item_name) 
 )
+## Translation 
+English
+Frensh
+
+## Switch between two languages
+button exist to switch
+
+## install dependancies
+composer req
