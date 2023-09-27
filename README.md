@@ -1,16 +1,17 @@
 # scrud-jquery-ajax-sqlite-php
 SCRUD with jquery sqlite ajax and php
+
 ## FRENCH
-projet contenant un simple SCRUD(SEARCH CREATE READ UPDATE DELETE)
+Projet contenant un simple SCRUD(SEARCH CREATE READ UPDATE DELETE)
 avec :
 bootstrap 5.2
-jquery 3.6
+jquery 3.7
 PHP 7.4
 SQlite 3
 dans une page unique
 
 ## ENGLISH
-project containing a simple SCRUD(SEARCH CREATE READ UPDATE DELETE)
+Project containing a simple SCRUD(SEARCH CREATE READ UPDATE DELETE)
 with :
 bootstrap 5.2
 jquery 3.7
@@ -23,12 +24,12 @@ CREATE TABLE IF NOT EXISTS items (
 item_name STRING,
 UNIQUE(item_name) 
 )
+
 ## Translation 
-English
-Frensh
+English & Frensh
 
 ## Switch between two languages
-button exist to switch
+Button exist to switch
 
-## install dependancies
-composer req
+## Install dependencies 
+composer require symfony/yaml
