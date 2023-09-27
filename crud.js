@@ -1,8 +1,37 @@
 $(document).ready(function () {
-  // Charger la liste des éléments existants
+  /* $('.basic-select2').select2({
+    width: "100%"
+  }); */
+  function loadSelectChoiceLang()
+  { 
+    let langSelect2 = $("html").attr("lang");
+    let placeholderSelect2 = "Enter your item";
+    if (langSelect2 == "fr") {
+      placeholderSelect2 = "Saisir votre élément";
+    }
+    $('#select-lang-form').select2({
+      width: "30%"
+    });
+  }
+  loadSelectChoiceLang();
+  // (FR) - Fonction pour charger le spinner
+  // (EN / US) - Function for loading the spinner
+  function loadSpinner() {
+    $("#item-list").append(
+      '<tr id="load-spinner"><td><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>'
+    );
+  }
+  // (FR) - Fonction pour supprimer le spinner
+  // (EN / US) - Function to remove spinner
+  function emptySpinner() {
+    $("#load-spinner").empty();
+  }
+
+  // (FR) - Charger la liste des éléments existants
+  // (EN / US) - Load list of existing items
   function loadItems() {
-    $('button').prop('disabled', true);
-    /*$.ajax({
+    $("button").prop("disabled", true);
+    $.ajax({
       url: "http://localhost/crudjquery/api/items.php",
       timeout: 3000,
       beforeSend: function () {
@@ -20,15 +49,15 @@ $(document).ready(function () {
       for (let i = names.length - 1; i >= 0; i--) {
         $("#item-list").append("<tr><td>" + names[i] + "</td></tr>");
       }
-    });*/
+    }).always;
   }
   loadItems();
-  // Ajouter un nouvel élément
+  // (FR) - Ajouter un nouvel élément
+  // (EN / US) - Add a new item
   $("#add-item-form").on("submit", function (eventAddItem) {
     $("#error-message").empty();
     eventAddItem.preventDefault();
     // Récupérez les données du formulaire
-    var formData = $(this).serialize();
     var newItem = $("#new-item").val();
     console.log(newItem);
     // Vérifier si la valeur a moins de 3 caractères
@@ -58,9 +87,7 @@ $(document).ready(function () {
         /*setTimeout(() => {
           console.log("Delayed for 1 second.");
         }, "1000");*/
-        $("#item-list").append(
-          '<tr><td><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>'
-        );
+        loadSpinner();
       },
     })
       .done(function (data, textStatus, jqXHR) {
@@ -71,38 +98,47 @@ $(document).ready(function () {
       })
       .always(function () {
         $("#new-item").val("");
+        emptySpinner();
         console.log("complete ajax post items");
       });
   });
-  $("input").on("keyup", function (eventKeyEditItem) {
+  // (FR) - Fonction qui ecoute le clavier dans les inputs et supprime les espaces
+  // (EN / US) - Function that listens to the keyboard in inputs and removes spaces
+  $("input").on("keyup", function (eventKeyInputItem) {
     var inputItem = $(this).val();
     var inputItemTrim = inputItem.trim();
+    var inputWithoutSpaces = inputItemTrim.replace(/\s+/g, ""); // Supprime les espaces
     var parentInput = $(this).parent();
     var childrenButton = parentInput.children("button");
-    if(inputItemTrim.length<3){
+    var childrenMessageError = parentInput.children("#error-message");
+    if (inputWithoutSpaces.length < 3) {
+      // ajout notification erreur
+      childrenMessageError.append(
+        '<i class="bi bi-exclamation-circle"></i> Le champ doit contenir au moins 3 caractères'
+      );
+      // mettre en rouge le contour input
       $(this).toggleClass("red-border");
-      childrenButton.prop('disabled', true);
-      $(this).val(inputItemTrim);
-    }else{
+      // desactiver le bouton
+      childrenButton.prop("disabled", true);
+      // charger le contenu sans espace
+      $(this).val(inputWithoutSpaces);
+      // Empêcher l'envoi du formulaire
+      eventKeyInputItem.preventDefault();
+    } else {
+      // Effacer le message d'erreur s'il y en a un
+      childrenMessageError.empty();
+      // rendre de contour input en bleu
       $(this).toggleClass("blue-border");
-      childrenButton.prop('disabled', false);
-      $(this).val(inputItemTrim);
+      // activer le bouton
+      childrenButton.prop("disabled", false);
+      // charger le contenu sans espace
+      $(this).val(inputWithoutSpaces);
     }
   });
-  // Modifier un élément existant
-  /*$("#edit-item").on("keyup", function (eventKeyEditItem) {
-    var editItem = $("#edit-item").val();
-    var editIemTrim = editItem.trim();
-    if(editIemTrim.length<3){
-      $("#edit-item").toggleClass("red-border");
-      $('#update-item').prop('disabled', true);
-      $(this).val(editIemTrim);
-    }else{
-      $("#edit-item").toggleClass("blue-border");
-      $('#update-item').prop('disabled', false);
-      $(this).val(editIemTrim);
-    }
-  });*/
+  /**
+   * (FR) - Action dans l'envoi du formulaire de mise a jour
+   * (EN / US) - Action in sending the update form
+   */
   $("#update-item-form").on("submit", function (eventEditItem) {
     $("#error-message-update").empty();
     eventEditItem.preventDefault();
@@ -148,7 +184,10 @@ $(document).ready(function () {
       });
   });
 
-  // Supprimer un élément
+  /**
+   * (FR) - Suppression d'un élément
+   * (EN / US) - Deleting an item
+   */
   $("#remove-item-form").on("submit", function (deleteEvent) {
     deleteEvent.preventDefault();
     var deletedItem = $("#delete-item").val();
@@ -172,7 +211,10 @@ $(document).ready(function () {
       });
   });
 
-  // Fonction de recherche
+  /**
+   * (FR) - Rechercher un élément
+   * (EN / US) - Search an item
+   */
   $("#search-item-form").on("submit", function (searchEvent) {
     searchEvent.preventDefault();
     var searchItem = $("#search-item").val();
@@ -215,53 +257,77 @@ $(document).ready(function () {
       });
   });
 
-  // Configuration de SELECT2.JS
-  $(".selectItem").select2({
-    width: "100%",
-    language: "fr",
-    theme: "bootstrap-5",
-    placeholder: "Entrer votre élément",
-    minimumInputLength: 3,
-    ajax: {
-      url: "http://localhost/crudjquery/api/select2ajax.php",
-      dataType: "json",
-      type: "GET",
-      delay: 250,
-      data: function (params) {
-        var queryParameters = {
-          q: params.term,
-        };
-        return queryParameters;
+  /**
+   * (FR) - Parametrage de SELECT2.JS
+   * (EN / US) - Setting up SELECT2.JS
+   */
+  function loadSelect2() {
+    var langSelect2 = $("html").attr("lang");
+    var placeholderSelect2 = "Enter your item";
+    if (langSelect2 == "fr") {
+      placeholderSelect2 = "Saisir votre élément";
+    }
+    $(".selectItem").select2({
+      width: "100%",
+      language: langSelect2,
+      theme: "bootstrap-5",
+      minimumInputLength: 3,
+      ajax: {
+        url: "http://localhost/crudjquery/api/select2ajax.php",
+        dataType: "json",
+        type: "GET",
+        delay: 250,
+        data: function (params) {
+          var queryParameters = {
+            q: params.term,
+          };
+          return queryParameters;
+        },
+        processResults: function (data) {
+          return {
+            results: data.map(function (item) {
+              return { id: item.name, text: item.name };
+            }),
+          };
+        },
+        cache: false,
       },
-      processResults: function (data) {
-        /*const names = [];
-        $(data).each(function (index, element) {
-          names.push(element.name);
-        });*/
-        return {
-          results: data.map(function (item) {
-            return { id: item.name, text: item.name };
-          }),
-        };
+      placeholder: placeholderSelect2,
+      minimumInputLength: 2,
+    });
+  }
+  loadSelect2();
+  /**
+   * (FR) - Parametrage de DATATABLE.JS
+   * (EN / US) - Setting up DATATABLE.JS
+   */
+  function loadDatatable() {
+    var urlLangFr = "/library/DataTables/Plugins/i18n/French.json";
+    var urlLangEn = "/library/DataTables/Plugins/i18n/en-gb.json";
+    var langage = $("html").attr("lang");
+    console.log(langage);
+    var urlLang = urlLangEn;
+    if (langage === "fr") {
+      urlLang = urlLangFr;
+    } else if (langage === "en") {
+      urlLang = urlLangEn;
+    } else {
+      urlLang = urlLangEn;
+    }
+
+    $("#table-item").DataTable({
+      searching: false, // (FR) - Désactive la fonction de recherche, (EN/US) - Disable the search function
+      ordering: false, // (FR) - Désactive la fonction de tri, (EN/US) - Disable sorting function
+      language: {
+        url: urlLang, // (FR) - URL vers le fichier de langue, (EN/US) - URL to the language file
       },
-      cache: false,
-    },
-    placeholder: "Saisir votre élément",
-    minimumInputLength: 2,
-  }); 
-  $('#table-item').DataTable({
-    "searching": false, // Désactive la fonction de recherche
-    "ordering": false, // Désactive la fonction de tri
-    "language": {
-      "url": "/library/DataTables/Plugins/i18n/French.json" // URL to the language file 
-    },
-    "lengthMenu": [5, 10, 25, 50], // Specify the available options
-    "pageLength": 5, // Set the default number of entries per page
-    "ajax": {
-      "url": 'http://localhost/crudjquery/api/items.php'  
-    },
-    "columns": [ 
-      { data: 'name' }
-    ]
-  });
-});  
+      lengthMenu: [5, 10, 25, 50], // (FR) - Préciser les options disponibles, (EN/US) - Specify the available options
+      pageLength: 5, // (FR) - Définir le nombre par défaut d'entrées par page, (EN/US) - Set the default number of entries per page
+      ajax: {
+        url: "http://localhost/crudjquery/api/items.php",
+      },
+      columns: [{ data: "name" }],
+    });
+  }
+  loadDatatable();
+});
